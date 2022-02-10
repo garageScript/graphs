@@ -1,7 +1,7 @@
 const path = require("path");
 
 module.exports = {
-  entry: "./client/index.js", // The first file to look into. Move your JavaScript here!
+  entry: "./public/client/index.js", // The first file to look into. Move your JavaScript here!
   mode: "production",
   output: {
     path: path.resolve(__dirname, "public/dist"), // We will put the compiled file into public/dist
