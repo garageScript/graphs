@@ -1,5 +1,5 @@
-import { generate, BINARY_TREE } from "./lib/generate.js";
+import express from "express";
+const app = express();
+app.use(express.static("public"));
 
-const result = generate(12, BINARY_TREE);
-
-console.log(JSON.stringify(result, null, 2));
+app.listen(process.env.PORT || 8123);
