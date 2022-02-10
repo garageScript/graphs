@@ -1,5 +1,15 @@
 import { generate, BINARY_TREE } from "./lib/generate.js";
 
-const result = generate(12, BINARY_TREE);
+const nodeNumInput$ = document.querySelector("#nodeNumInput");
+const nodeNumButton$ = document.querySelector("#nodeNumButton");
+const generatedGraphStr$ = document.querySelector("#generatedGraphStr");
 
-console.log(JSON.stringify(result, null, 2));
+nodeNumButton$.addEventListener("click", () => {
+  const nodeNum = parseInt(nodeNumInput$.value);
+  if (!nodeNum) {
+    return;
+  }
+  const result = generate(nodeNum, BINARY_TREE);
+
+  generatedGraphStr$.innerHTML = JSON.stringify(result, null, 2);
+});
