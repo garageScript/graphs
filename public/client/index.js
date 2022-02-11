@@ -1,20 +1,21 @@
 import { generate, BINARY_TREE } from "./lib/generate.js";
 import { bfs } from "./lib/traversal.js";
 
-const BOX_WIDTH = 8;
+const MIN_BOX_WIDTH = 10;
 
 const nodeNumInput$ = document.querySelector("#nodeNumInput");
 const nodeNumButton$ = document.querySelector("#nodeNumButton");
 const generatedGraphStr$ = document.querySelector("#generatedGraphStr");
 const gridContainer$ = document.querySelector("#gridContainer");
+const gridParent$ = document.querySelector("#gridParent");
 
 let graph = null;
 
-function Box() {
+function Box(boxWidth) {
   const div = document.createElement("div");
   div.classList.add("box");
-  div.style.width = `${BOX_WIDTH}px`;
-  div.style.height = `${BOX_WIDTH}px`;
+  div.style.width = `${boxWidth}px`;
+  div.style.height = `${boxWidth}px`;
   gridContainer$.append(div);
 
   this.paint = () => {
@@ -28,48 +29,77 @@ const clearGrid = () => {
 };
 
 let grid = [];
-const drawGrid = (width, height) => {
+const drawGrid = (width, height, boxWidth) => {
   if (!height) return;
   const row = new Array(width).fill(0).map((_) => {
-    return new Box();
+    return new Box(boxWidth);
   });
   grid.push(row);
-  return drawGrid(width, height - 1);
+  return drawGrid(width, height - 1, boxWidth);
 };
 
-const drawGraph = (start, end, root) => {
-  if (!root) {
-    return;
-  }
-  const row = grid[root.heightIndex];
-  const col = Math.ceil((start + end) / 2);
-  console.log(row, col);
-
-  row[col].paint();
-
-  // don't want end to be smaller than start
-  drawGraph(start, Math.max(start, col - 1), root.left);
-
-  drawGraph(Math.min(col + 1, end), end, root.right);
-};
-
-const draw = () => {
+const setGraphMetaData = () => {
   let graphHeight = 0;
   bfs(graph, (n, h) => {
     n.heightIndex = h - 1;
     graphHeight = Math.max(graphHeight, h);
   });
-  console.log(graph);
 
   const maxWidth = Math.pow(2, graphHeight);
 
-  gridContainer$.style.width = `${maxWidth * BOX_WIDTH}px`;
-  gridContainer$.style.height = `${graphHeight * BOX_WIDTH}px`;
+  let leftMost = maxWidth;
+  let rightMost = 0;
+
+  const setColumn = (start, end, root) => {
+    if (!root) {
+      return;
+    }
+    const row = grid[root.heightIndex];
+    const col = Math.ceil((start + end) / 2);
+
+    root.leafIndex = col;
+    leftMost = Math.min(leftMost, col);
+    rightMost = Math.max(rightMost, col);
+
+    // don't want end to be smaller than start
+    setColumn(start, Math.max(start, col - 1), root.left);
+
+    setColumn(Math.min(col + 1, end), end, root.right);
+  };
+
+  setColumn(0, maxWidth, graph);
+
+  bfs(graph, (n, h) => {
+    n.leafIndex -= leftMost;
+    console.log(n.leafIndex);
+  });
+
+  console.log(`leftMost: ${leftMost}, rightMost: ${rightMost}`);
+
+  return {
+    maxWidth: rightMost - leftMost + 1,
+    graphHeight,
+  };
+};
+
+const draw = () => {
+  const { maxWidth, graphHeight } = setGraphMetaData();
+
+  const boxWidth = Math.max(
+    Math.min(gridParent$.clientWidth / maxWidth),
+    MIN_BOX_WIDTH
+  );
+
+  gridContainer$.style.width = `${maxWidth * boxWidth}px`;
+  gridContainer$.style.height = `${graphHeight * boxWidth}px`;
 
   clearGrid();
-  drawGrid(maxWidth, graphHeight);
+  drawGrid(maxWidth, graphHeight, boxWidth);
 
-  drawGraph(0, maxWidth, graph);
+  bfs(graph, (n, h) => {
+    grid[n.heightIndex][n.leafIndex].paint();
+  });
+
   console.log("max height", graphHeight, maxWidth);
 };
 
