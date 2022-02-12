@@ -1,5 +1,6 @@
 import { generate, BINARY_TREE } from "./lib/generate.js";
 import { bfs } from "./lib/traversal.js";
+import { drawSVG } from "./lib/svg.js";
 
 const MIN_BOX_WIDTH = 10;
 
@@ -7,7 +8,7 @@ const nodeNumInput$ = document.querySelector("#nodeNumInput");
 const nodeNumButton$ = document.querySelector("#nodeNumButton");
 const generatedGraphStr$ = document.querySelector("#generatedGraphStr");
 const gridContainer$ = document.querySelector("#gridContainer");
-const gridParent$ = document.querySelector("#gridParent");
+const [gridParent$, svgContainer$] = document.querySelectorAll(".gridParent");
 
 let graph = null;
 
@@ -40,10 +41,25 @@ const drawGrid = (width, height, boxWidth) => {
 
 const setGraphMetaData = () => {
   let graphHeight = 0;
+  let levels = [];
   bfs(graph, (n, h) => {
     n.heightIndex = h - 1;
     graphHeight = Math.max(graphHeight, h);
+
+    const row = levels[h - 1] || [];
+    if (n.left) {
+      n.left.parent = n;
+      n.left.isLeftChild = true;
+    }
+    if (n.right) {
+      n.right.parent = n;
+      n.right.isRightChild = true;
+    }
+    row.push(n);
+    levels[h - 1] = row;
   });
+
+  drawSVG(svgContainer$, levels);
 
   const maxWidth = Math.pow(2, graphHeight);
 
@@ -71,10 +87,7 @@ const setGraphMetaData = () => {
 
   bfs(graph, (n, h) => {
     n.leafIndex -= leftMost;
-    console.log(n.leafIndex);
   });
-
-  console.log(`leftMost: ${leftMost}, rightMost: ${rightMost}`);
 
   return {
     maxWidth: rightMost - leftMost + 1,
@@ -99,8 +112,6 @@ const draw = () => {
   bfs(graph, (n, h) => {
     grid[n.heightIndex][n.leafIndex].paint();
   });
-
-  console.log("max height", graphHeight, maxWidth);
 };
 
 nodeNumButton$.addEventListener("click", () => {
