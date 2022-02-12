@@ -2,6 +2,12 @@ const SPACE = 50;
 const CHILD_SKEW = 20;
 const BOX_SIZE = 60;
 
+const backLog = [];
+
+export const runAnimation = (node) => {
+  backlog.push(node);
+};
+
 function SvgNode(parent$, node, hSpace) {
   const element = document.createElementNS(
     "http://www.w3.org/2000/svg",
@@ -35,6 +41,12 @@ function SvgNode(parent$, node, hSpace) {
   element.setAttributeNS(null, "cy", y);
   element.setAttributeNS(null, "r", radius);
   element.setAttributeNS(null, "fill", "yellow");
+
+  /*
+  setTimeout(() => {
+    element.setAttributeNS(null, "fill", "#9999ff");
+  }, 1000);
+  */
   // used for debugging. This way we could log the node and see what svg it corresponds to in the inspector
   this.svgElement = element;
 

@@ -5,18 +5,20 @@ export const algorithmNames = {
 };
 
 algorithms.bfs = `
-const bfs = (root, level=[node]) => {
+const bfs = (root, level=[root]) => {
   if (!level.length) {
     return
   }
 
   const nextLevel = []
   level.forEach( node => {
+    node.getValue()
+
     node.left && nextLevel.push(node.left)
     node.right && nextLevel.push(node.right)
   })
 
-  node.getValue()
+  bfs(root, nextLevel)
 }
 
 runFun(bfs)
@@ -27,7 +29,7 @@ const dfs = (root) => {
   if (!root) {
     return
   }
-  node.getValue()
+  root.getValue()
   dfs(root.left)
   dfs(root.right)
 }
