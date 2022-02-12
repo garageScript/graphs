@@ -30,8 +30,13 @@ const dfs = (root) => {
     return
   }
   root.getValue()
+
   dfs(root.left)
+  root.getValue()
+
+
   dfs(root.right)
+  root.getValue()
 }
 
 runFun(dfs)

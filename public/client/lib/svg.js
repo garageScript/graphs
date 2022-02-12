@@ -2,10 +2,30 @@ const SPACE = 50;
 const CHILD_SKEW = 20;
 const BOX_SIZE = 60;
 
-const backLog = [];
+const backlog = [];
+
+let isRunning = false;
+
+const runJob = () => {
+  isRunning = true;
+  setTimeout(() => {
+    const node = backlog.shift();
+    if (!node) {
+      isRunning = false;
+      return;
+    }
+    console.log(node);
+    node.svgNode.trigger();
+    runJob();
+  }, 1000);
+};
 
 export const runAnimation = (node) => {
   backlog.push(node);
+  if (isRunning) {
+    return;
+  }
+  runJob();
 };
 
 function SvgNode(parent$, node, hSpace) {
@@ -42,11 +62,6 @@ function SvgNode(parent$, node, hSpace) {
   element.setAttributeNS(null, "r", radius);
   element.setAttributeNS(null, "fill", "yellow");
 
-  /*
-  setTimeout(() => {
-    element.setAttributeNS(null, "fill", "#9999ff");
-  }, 1000);
-  */
   // used for debugging. This way we could log the node and see what svg it corresponds to in the inspector
   this.svgElement = element;
 
@@ -78,6 +93,13 @@ function SvgNode(parent$, node, hSpace) {
     );
 
     parent$.appendChild(line);
+  };
+
+  this.trigger = () => {
+    element.setAttributeNS(null, "fill", "#9999ff");
+    setTimeout(() => {
+      element.setAttributeNS(null, "fill", "yellow");
+    }, 1000);
   };
 }
 

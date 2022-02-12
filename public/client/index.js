@@ -9,6 +9,7 @@ const generatedGraphStr$ = document.querySelector("#generatedGraphStr");
 const svgContainer$ = document.querySelector(".gridParent");
 const algText$ = document.querySelector(".algText");
 const algList$ = document.querySelector(".algList");
+const runCode$ = document.querySelector("#runCode");
 
 algList$.innerHTML = Object.keys(algorithms).reduce((acc, key) => {
   return (
@@ -26,20 +27,20 @@ Array.from(algOptions).forEach((op) => {
   });
 });
 
-window.executeAlg = () => {
+runCode$.addEventListener("click", () => {
   const runFun = (cb) => {
     cb(graph);
   };
   eval(algText$.value);
-};
+});
 
 let graph = null;
 
 const draw = () => {
   let levels = [];
   bfs(graph, (n, h) => {
-    n.getValue = () => {
-      runAnimation(n);
+    n.getValue = function () {
+      runAnimation(this);
       return n.value;
     };
     n.heightIndex = h - 1;
