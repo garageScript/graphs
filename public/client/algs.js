@@ -1,10 +1,26 @@
-export const algorithms = {};
-export const algorithmNames = {
-  bfs: "Breadth First Search",
-  dfs: "Depth First Search",
+export const algorithms = {
+  bfs: {
+    name: "Breadth First Search",
+    description: `
+BFS will go through the tree row by row. 
+
+The algorithm uses an array <code>level</code> to contain all the nodes in the row.
+    `,
+  },
+
+  dfs: {
+    name: "Depth First Search",
+    description: `
+DFS will go through the tree all the way through the left node, then go to the right node.
+
+When it hits a leaf node (node without children), you may have to wait for it to visit the left and right null nodes.
+
+Challenge: How would you change the code to go all the way through the right nodes first instead?
+    `,
+  },
 };
 
-algorithms.bfs = `
+algorithms.bfs.code = `
 const bfs = (root, level=[root]) => {
   if (!level.length) {
     return
@@ -24,7 +40,7 @@ const bfs = (root, level=[root]) => {
 runFun(bfs)
 `;
 
-algorithms.dfs = `
+algorithms.dfs.code = `
 const dfs = (root) => {
   if (!root) {
     return

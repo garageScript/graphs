@@ -1,7 +1,7 @@
 import { generate, BINARY_TREE } from "./lib/generate.js";
 import { bfs } from "./lib/traversal.js";
 import { drawSVG, runAnimation } from "./lib/svg.js";
-import { algorithms, algorithmNames } from "./algs.js";
+import { algorithms } from "./algs.js";
 
 const nodeNumInput$ = document.querySelector("#nodeNumInput");
 const nodeNumButton$ = document.querySelector("#nodeNumButton");
@@ -15,7 +15,16 @@ algList$.innerHTML = Object.keys(algorithms).reduce((acc, key) => {
   return (
     acc +
     `
-    <li class="alg" data-alg="${key}">${algorithmNames[key]}</li>
+    <div class="alg" data-alg="${key}">
+    <details>
+      <summary>
+        ${algorithms[key].name}
+      </summary>
+        <pre>
+${algorithms[key].description}
+        </pre>
+    </details>  
+    </div>
     `
   );
 }, "");
@@ -23,7 +32,7 @@ const algOptions = document.querySelectorAll(".alg");
 
 Array.from(algOptions).forEach((op) => {
   op.addEventListener("click", () => {
-    algText$.value = algorithms[op.dataset.alg];
+    algText$.value = algorithms[op.dataset.alg].code;
   });
 });
 
