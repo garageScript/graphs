@@ -6,10 +6,3 @@ pre#generatedGraphStr {
   max-width: 100%;
   overflow: auto;
 }
-
-.box {
-  box-sizing: border-box;
-  border: 1px solid #aaa;
-  display: inline-block;
-  float: left;
-}
