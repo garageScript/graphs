@@ -2,7 +2,18 @@ pre#generatedGraphStr {
   max-height: 200px;
 }
 
+.splitView {
+  display: flex;
+}
+.window {
+  width: 100%;
+}
+
 .gridParent {
   max-width: 100%;
   overflow: auto;
+}
+
+.alg {
+  cursor: pointer;
 }
