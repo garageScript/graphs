@@ -15,7 +15,7 @@ algList$.innerHTML = Object.keys(algorithms).reduce((acc, key) => {
   return (
     acc +
     `
-    <div class="alg" data-alg="${key}">
+    <div class="alg">
     <details>
       <summary>
         ${algorithms[key].name}
@@ -23,12 +23,13 @@ algList$.innerHTML = Object.keys(algorithms).reduce((acc, key) => {
         <pre>
 ${algorithms[key].description}
         </pre>
+        <button class="revealCodeButton" data-alg="${key}">Reveal Code</button>
     </details>  
     </div>
     `
   );
 }, "");
-const algOptions = document.querySelectorAll(".alg");
+const algOptions = document.querySelectorAll(".revealCodeButton");
 
 Array.from(algOptions).forEach((op) => {
   op.addEventListener("click", () => {
