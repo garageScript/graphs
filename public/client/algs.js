@@ -18,7 +18,39 @@ When it hits a leaf node (node without children), you may have to wait for it to
 Challenge: How would you change the code to go all the way through the right nodes first instead?
     `,
   },
+
+  maxDepth: {
+    name: "Max Value",
+    description: `
+How would you return the max value of the node in a tree? Both BFS and DFS would work.
+    `,
+  },
 };
+
+algorithms.maxDepth.code = `
+const bfs = (root, level=[root], maxValue=null) => {
+  if (!level.length) {
+    return maxValue
+  }
+
+  if (maxValue === null) {
+    maxValue = root.value
+  }
+
+  const nextLevel = []
+  level.forEach( node => {
+    maxValue = Math.max(node.getValue(), maxValue)
+
+    node.left && nextLevel.push(node.left)
+    node.right && nextLevel.push(node.right)
+  })
+
+  return bfs(root, nextLevel, maxValue)
+}
+
+runFun(bfs)
+
+`;
 
 algorithms.bfs.code = `
 const bfs = (root, level=[root]) => {
